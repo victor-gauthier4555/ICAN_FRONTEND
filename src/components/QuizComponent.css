@@ -1,41 +1,42 @@
 .quiz-wrapper {
+  margin: 0 !important;  /* Supprime tout espace parasite */
+  padding: 0 !important;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 120px 20px 20px; /* Ajoutez un padding pour l'espacement */
+  background-color: #00a7b0;
+   /* Ajoutez un padding pour l'espacement */
 }
 
 .quiz-container {
-  width: 40%;
-  height: 400px;  /* Hauteur fixée pour éviter les remontées */
-  max-width: 600px;
+  width: 100vw;
+  height: 100vh;  /* Hauteur fixée pour éviter les remontées */
+
   background-color: #00a7b0;
-  padding: 20px;
   border-radius: 15px;
   text-align: center;
   color: black;
   font-size: 22px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden; /* Empêche le débordement */
+
   transition: box-shadow 0.3s ease-in-out;
   position: relative; /* Nécessaire pour le positionnement absolu du bouton */
 
 }
 
-.quiz-container:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Ombre plus forte au survol */
-}
 
 .quiz-container h2 {
   font-weight: 600;
-  font-size: clamp(18px, 3vw, 28px); /* Taille de police adaptative */
+  font-size: clamp(18px, 3vw, 26px); /* Taille de police adaptative */
   word-wrap: break-word;
   overflow-wrap: break-word;
+  margin-left : 10px;
 }
 
 .progress-wrapper {
   position: absolute;
-  top: 10px; /* Ajustez pour positionner verticalement */
-  right: 600px; /* Ajustez pour positionner horizontalement */
+  top: 50px; /* Ajustez pour positionner verticalement */
+  right: 30px; /* Ajustez pour positionner horizontalement */
 }
 
 .options-container {

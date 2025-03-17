@@ -60,35 +60,27 @@ const FinalPage = ({ score }) => {
 
   useEffect(() => {
     if (!hasSentRequest.current) {
-      fetch("https://com-website.onrender.com/finish_test", { method: "POST" });
+      fetch("https://com-website.onrender.com/finish_test", { method: "POST" , headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
+      }});
       hasSentRequest.current = true; // Marque comme envoyé
     }
   }, []);
 
   return (
-    <div className="final-page">
-      {/* Logo en haut */}
-      <div className="quiz-header">
-        <img src="/image.png" alt="IHU ICAN Logo" className="quiz-logo" />
-      </div>
-
-      {/* Rectangle bleu contenant le résultat */}
       <div className="result-container">
 
         <p><strong>Total des points :</strong> {score}</p>
         <h3>{result.title}</h3>
         <p><strong>Interprétation :</strong> {result.interpretation}</p>
 
-        <h4>Conseils :</h4>
-        <ul>
-          {result.conseils.map((conseil, index) => (
-            <li key={index}>{conseil}</li>
-          ))}
-        </ul>
+
 
 
       </div>
-    </div>
   );
 };
 

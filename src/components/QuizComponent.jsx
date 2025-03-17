@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import './QuizComponent.css';
 import CircularProgress from './CircularProgress';
 import FinalPage from './FinalPage'; // Importation de la page finale
+import CryptoJS from "crypto-js";
+
+
+const SECRET_KEY = process.env.REACT_APP_SECRET_KEY;
+
 
 const QuizComponent = () => {
   // Questions avec des poids pour chaque option
@@ -98,6 +103,7 @@ const QuizComponent = () => {
   const [showFinalPage, setShowFinalPage] = useState(false); // Gérer l'affichage de FinalPage
 
   const handleAnswerClick = (answerIndex) => {
+
     const weight = questions[currentQuestionIndex].weights ? questions[currentQuestionIndex].weights[answerIndex] : 0;
     setScore(prevScore => prevScore + weight);
     setIsTransitioning(true);
@@ -108,12 +114,19 @@ const QuizComponent = () => {
     }, 300);
   };
 
+
+
   const handleInputChange = (e) => {
+    const encryptedValue = CryptoJS.AES.encrypt(e.target.value.toString(), SECRET_KEY).toString();
+
     setUserInputs({
       ...userInputs,
-      [questions[currentQuestionIndex].id]: e.target.value
+      [questions[currentQuestionIndex].id]: encryptedValue  // On stocke la valeur chiffrée
     });
-  };
+
+
+};
+
 
   const handleSubmitInput = () => {
     if (validateNumberInput(userInputs[questions[currentQuestionIndex].id])) {
@@ -125,9 +138,23 @@ const QuizComponent = () => {
     }
   };
 
-  const validateNumberInput = (value) => {
-    return value !== '' && !isNaN(value) && Number(value) > 0;
+  const validateNumberInput = (encryptedValue) => {
+
+    try {
+
+        if (!encryptedValue) return false;
+
+        // Déchiffrement de la valeur
+        const decryptedValue = CryptoJS.AES.decrypt(encryptedValue, SECRET_KEY).toString(CryptoJS.enc.Utf8);
+
+        // Vérification que la valeur est bien un nombre valide
+        return decryptedValue !== '' && !isNaN(decryptedValue) && Number(decryptedValue) > 0;
+    } catch (error) {
+        console.error("Erreur lors du déchiffrement :", error);
+        return false;
+    }
   };
+
 
   const moveToNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
@@ -143,14 +170,19 @@ const QuizComponent = () => {
 
 
   const calculateIMC = () => {
-    const taille = parseFloat(userInputs[4]) / 100;
-    const poids = parseFloat(userInputs[5]);
+
+    const taille = parseFloat(CryptoJS.AES.decrypt(userInputs[4], SECRET_KEY).toString(CryptoJS.enc.Utf8)) / 100;
+    const poids = parseFloat(CryptoJS.AES.decrypt(userInputs[5], SECRET_KEY).toString(CryptoJS.enc.Utf8));
+    console.log(taille);
     if (taille && poids) {
-      const imc = poids / (taille * taille);
-      let imcScore = imc < 25 ? 0 : imc < 30 ? 1 : 3;
-      setScore(prevScore => prevScore + imcScore);
+        const imc = poids / (taille * taille);
+        let imcScore = imc < 25 ? 0 : imc < 30 ? 1 : 3;
+        setScore((prevScore) => prevScore + imcScore);
+        console.log(imc);
     }
-  };
+
+};
+
 
   const restartQuiz = () => {
     setCurrentQuestionIndex(0);
@@ -166,9 +198,6 @@ const QuizComponent = () => {
         <FinalPage score={score} restartQuiz={restartQuiz} />
       ) : (
         <>
-          <div className="quiz-header">
-            <img src="/image.png" alt="IHU ICAN Logo" className="quiz-logo"/>
-          </div>
 
           <div className="quiz-container">
             <div className="progress-wrapper">
@@ -184,19 +213,21 @@ const QuizComponent = () => {
                     </button>
                   ))
                 ) : (
-                  <div className="input-container">
-                    <input
-                      type="number"
-                      value={userInputs[questions[currentQuestionIndex].id] || ''}
-                      onChange={handleInputChange}
-                    />
-                    <button
-                        onClick={handleSubmitInput}
-                        disabled={!validateNumberInput(userInputs[questions[currentQuestionIndex].id])}
-                    >
-                      Suivant
-                    </button>
-                  </div>
+                    <div className="input-container">
+                      <input
+                          type="number"
+                          value={userInputs[questions[currentQuestionIndex].id]
+                              ? CryptoJS.AES.decrypt(userInputs[questions[currentQuestionIndex].id], SECRET_KEY).toString(CryptoJS.enc.Utf8)
+                              : ""}
+                          onChange={handleInputChange}
+                      />
+                      <button
+                          onClick={handleSubmitInput}
+                          disabled={!validateNumberInput(userInputs[questions[currentQuestionIndex].id])}
+                      >
+                        Suivant
+                      </button>
+                    </div>
                 )}
               </div>
             </div>
