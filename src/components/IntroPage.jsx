@@ -16,7 +16,7 @@ const IntroPage = ({ startQuiz }) => {
     startQuiz();
 
     // Optionnel : ping backend en arrière-plan
-    fetch("http://127.0.0.1:5000/start_test", {
+    fetch("https://com-website.onrender.com/start_test", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
