@@ -1,40 +1,31 @@
-import React,{ useEffect } from "react";
+import React, { useRef } from "react";
 import "./IntroPage.css";
 
 const IntroPage = ({ startQuiz }) => {
+  const honeypotRef = useRef(null);
 
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://www.google.com/recaptcha/api.js?render=6LdAJvMqAAAAAOVxS_Q96dRIUcBw6VmxrWzz2xRK";
-    script.async = true;
-    document.body.appendChild(script);
-  }, []);
+  const handleStartQuiz = () => {
+    const honeypotValue = honeypotRef.current?.value;
 
-  const handleStartQuiz = async () => {
-    window.grecaptcha.ready(async () => {
+    if (honeypotValue) {
+      console.warn("Tentative suspecte détectée (champ honeypot rempli)");
+      return;
+    }
 
-      const token = await window.grecaptcha.execute("6LdAJvMqAAAAAOVxS_Q96dRIUcBw6VmxrWzz2xRK", { action: "start_test" });
-      console.log("Token reCAPTCHA généré :", token); // 🔍
-      const response = await fetch("https://com-website.onrender.com/start_test", {
-        method: "POST",
-        headers: {
+    // Pas de bot détecté → on lance le quiz immédiatement
+    startQuiz();
+
+    // Optionnel : ping backend en arrière-plan
+    fetch("http://127.0.0.1:5000/start_test", {
+      method: "POST",
+      headers: {
         "Content-Type": "application/json",
         "Cache-Control": "no-cache, no-store, must-revalidate",
         "Pragma": "no-cache",
         "Expires": "0"
       },
-        body: JSON.stringify({ token }),
-      });
-
-      const data = await response.json();
-      if (data.success) {
-
-        document.querySelector(".grecaptcha-badge").classList.add("hidden-recaptcha");
-        startQuiz();
-      } else {
-        alert("Captcha échoué, veuillez réessayer.");
-      }
-    });
+      body: JSON.stringify({ antiBot: "" }), // Champ honeypot vide = humain
+    }).catch((err) => console.warn("Erreur backend (non bloquante)", err));
   };
 
   return (
@@ -42,14 +33,20 @@ const IntroPage = ({ startQuiz }) => {
       <div className="container">
         {/* Triangle bleu foncé */}
 
-
-
-
-        {/* Cadre de description du quiz + bouton */}
         <div className="quiz-description">
+          {/* Champ invisible anti-bot */}
+          <input
+            type="text"
+            name="antiBot"
+            ref={honeypotRef}
+            style={{ display: "none" }}
+            autoComplete="off"
+          />
 
-          {/* Bouton Commencer (intégré dans la zone) */}
-          <button onClick={handleStartQuiz} className="start-button">Commencer</button>
+          {/* Bouton Commencer */}
+          <button onClick={handleStartQuiz} className="start-button">
+            Commencer
+          </button>
         </div>
       </div>
     </div>
