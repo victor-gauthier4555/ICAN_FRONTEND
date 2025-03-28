@@ -1,18 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-
 import "./FinalPage.css";
 
-
-
-const FinalPage = ({ score }) => {
-  const [email, setEmail] = useState(""); // Stocke l'email actuel
-  const [isSubmitted, setIsSubmitted] = useState(false); // Vérifie si soumis
+const FinalPage = ({ score, approx }) => {
+  const [email, setEmail] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const hasSentRequest = useRef(false);
 
-
-
-
-  // Fonction pour récupérer le texte en fonction du score
   const getResultDetails = (score) => {
     if (score <= 11) {
       return {
@@ -60,30 +53,35 @@ const FinalPage = ({ score }) => {
 
   useEffect(() => {
     if (!hasSentRequest.current) {
-      fetch("https://com-website.onrender.com/finish_test", { method: "POST" , headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Pragma": "no-cache",
-        "Expires": "0"
-      }});
-      hasSentRequest.current = true; // Marque comme envoyé
+      fetch("https://com-website.onrender.com/finish_test", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Pragma": "no-cache",
+          "Expires": "0"
+        }
+      });
+      hasSentRequest.current = true;
     }
   }, []);
 
   return (
-      <div className="result-container">
+    <div className="result-container">
+      <p><strong>Total des points :</strong> {score}</p>
+      {approx && (
+        <p style={{ fontStyle: "italic", color: "#888" }}>
+          <strong>À noter :</strong> vous n’avez pas renseigné certaines données clés comme :  la glycémie à jeun, le taux de cholestérol et/ou la tension artérielle.
+          <br/> Le résultat proposé est donc une estimation partielle de votre risque cardiométabolique. Pour une évaluation plus complète et personnalisée, nous vous recommandons de compléter ces informations dès que possible.
+        </p>
+      )}
 
-        <p><strong>Total des points :</strong> {score}</p>
-        <h3>{result.title}</h3>
-        <p><strong>Interprétation :</strong> {result.interpretation}</p>
 
-
-
-
-      </div>
+    </div>
   );
 };
 
 export default FinalPage;
+
 
 
