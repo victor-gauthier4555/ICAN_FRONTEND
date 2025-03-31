@@ -186,7 +186,7 @@
   padding: 12px 40px;
   border: 0.5px solid black;
   border-radius: 30px;
-  background-color: transparent;
+  background-color: white;
   color: black;
   font-size: clamp(16px, 2vw, 20px);
   cursor: pointer;
