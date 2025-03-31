@@ -70,7 +70,7 @@ const FinalPage = ({ score, approx }) => {
     <div className="result-container">
       <p><strong>Total des points :</strong> {score}</p>
       {approx && (
-        <p style={{ fontStyle: "italic", color: "#888" }}>
+        <p style={{ fontStyle: "italic", color: "white" }}>
           <strong>À noter :</strong> vous n’avez pas renseigné certaines données clés comme :  la glycémie à jeun, le taux de cholestérol et/ou la tension artérielle.
           <br/> Le résultat proposé est donc une estimation partielle de votre risque cardiométabolique. Pour une évaluation plus complète et personnalisée, nous vous recommandons de compléter ces informations dès que possible.
         </p>
