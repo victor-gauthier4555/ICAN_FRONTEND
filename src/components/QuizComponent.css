@@ -51,7 +51,7 @@
   padding: 10px 30px; /* Réduction du padding pour diminuer la hauteur */
   border: 0.5px solid black; /* Couleur de la bordure */
   border-radius: 30px; /* Forme ovale */
-  background-color: transparent;
+  background-color: white;
   color: black; /* Couleur du texte */
   font-size: clamp(14px, 2vw, 18px); /* Réduction progressive de la taille de police */
   cursor: pointer;
